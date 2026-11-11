@@ -1,0 +1,83 @@
+# Model registry for BioLens.
+# `supported: true` means an adapter is implemented in src/biolens/models/.
+# Entries with `supported: false` are placeholders for models not yet implemented.
+
+models:
+
+  # ── Protein language models ─────────────────────────────────────────────
+  esm2_8m:
+    family: protein
+    hf_name: facebook/esm2_t6_8M_UR50D
+    tokenizer: facebook/esm2_t6_8M_UR50D
+    num_layers: 6        # transformer blocks (excludes embedding layer)
+    hidden_dim: 320
+    max_seq_len: 1024    # safe upper bound; model handles up to ~5000 with degraded quality
+    supported: true
+
+  esm2_35m:
+    family: protein
+    hf_name: facebook/esm2_t12_35M_UR50D
+    tokenizer: facebook/esm2_t12_35M_UR50D
+    num_layers: 12
+    hidden_dim: 480
+    max_seq_len: 1024
+    supported: true
+
+  esm2_150m:
+    family: protein
+    hf_name: facebook/esm2_t30_150M_UR50D
+    tokenizer: facebook/esm2_t30_150M_UR50D
+    num_layers: 30
+    hidden_dim: 640
+    max_seq_len: 1024
+    supported: true
+
+  esm2_650m:
+    family: protein
+    hf_name: facebook/esm2_t33_650M_UR50D
+    tokenizer: facebook/esm2_t33_650M_UR50D
+    num_layers: 33
+    hidden_dim: 1280
+    max_seq_len: 1024
+    supported: true
+
+  # ── Genomic models ──────────────────────────────────────────────────────
+  # Evo 2 is loaded through the `evo2` package's own class, not
+  # transformers.AutoModel (see src/biolens/models/evo2.py); hf_name and
+  # tokenizer are kept for discoverability. Requires a CUDA GPU and flash-attn.
+  evo2_7b:
+    family: genomic
+    hf_name: arcinstitute/evo2_7b
+    tokenizer: arcinstitute/evo2_7b
+    num_layers: 32
+    hidden_dim: 4096
+    max_seq_len: 8192    # conservative; the model supports up to 1M tokens
+    supported: true
+
+  hyenadna_large_1m:
+    family: genomic
+    hf_name: LongSafari/hyenadna-large-1m-seqlen-hf
+    tokenizer: LongSafari/hyenadna-large-1m-seqlen-hf
+    num_layers: 24
+    hidden_dim: 256
+    max_seq_len: 8192
+    supported: false     # not implemented
+
+  # ── Single-cell models ──────────────────────────────────────────────────
+  geneformer_12l:
+    family: single_cell
+    hf_name: ctheodoris/Geneformer
+    tokenizer: ctheodoris/Geneformer
+    num_layers: 12
+    hidden_dim: 512
+    max_seq_len: 2048    # gene tokens per cell
+    supported: false     # not implemented
+
+  scgpt_human:
+    family: single_cell
+    hf_name: null        # requires a local checkpoint
+    tokenizer: null
+    num_layers: 12
+    hidden_dim: 512
+    max_seq_len: 1200
+    supported: false     # not implemented

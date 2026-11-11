@@ -1,0 +1,31 @@
+# Format example for a verified-features registry (see biolens.eval.feature_inspection).
+#
+# ILLUSTRATIVE ENTRIES ONLY: the feature indices, concepts and accessions below
+# are placeholders showing the schema, not results from a real run.
+#
+# A registry records, per (feature, claimed GO term), what a manual check of the
+# feature's top-activating sequences against UniProt found. Both scripts/inspect_features.py
+# and the dashboard read it and show a feature's recorded status instead of a raw,
+# unverified AUROC claim.
+model: esm2_8m
+layer: 5
+sae_variant: topk
+k: 32
+
+features:
+  # One claim per feature.
+  7:
+    status: confirmed            # confirmed | plausible | spurious | unverifiable
+    claimed_go: ["GO:0005576"]
+    claimed_concept: "extracellular region"
+    real_identity: "example: top-activating proteins are secreted"
+    evidence_accessions: ["P00000"]
+
+  # A feature that backs a high AUROC but whose top-activating sequences do not
+  # match the claimed concept.
+  42:
+    status: spurious
+    claimed_go: ["GO:0016020"]
+    claimed_concept: "membrane"
+    real_identity: "example: fires on a broad structural motif shared with unrelated proteins"
+    evidence_accessions: ["P00001"]

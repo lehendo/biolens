@@ -1,0 +1,91 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "biolens"
+version = "0.1.0"
+description = "Sparse autoencoder (SAE) interpretability toolkit for biological foundation models, with tooling to verify feature claims"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Arjun Chatterjee"}]
+keywords = ["mechanistic interpretability", "biology", "sparse autoencoders", "protein language models", "genomics"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+
+dependencies = [
+    "torch>=2.4",
+    "transformers>=4.57.6,<5.0.0",
+    "numpy>=1.26",
+    "scipy>=1.12",
+    "scikit-learn>=1.4",
+    "h5py>=3.10",
+    "pyyaml>=6.0",
+    "filelock>=3.13",
+    "tqdm>=4.66",
+    "einops>=0.7",
+    "requests>=2.31",
+    "huggingface-hub>=0.22",
+]
+
+[project.optional-dependencies]
+# Evo 2 needs a CUDA GPU; flash-attn must be built from source against your
+# installed torch (see README.md).
+evo2 = [
+    "evo2==0.6.0",
+    "flash-attn==2.8.3.post1",
+]
+dashboard = ["gradio>=4.20"]
+tracking = ["wandb>=0.16"]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.4",
+    "mypy>=1.9",
+    "types-PyYAML",
+    "types-requests",
+    "types-tqdm",
+]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = [
+    "E501",
+    "N812",  # e.g. `import torch.nn.functional as F` — standard PyTorch convention
+    "N806",  # e.g. `N, D = x.shape` — standard ML shape-variable notation
+    "N803",  # e.g. `Z: np.ndarray` — standard ML matrix-argument notation
+]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "integration: marks tests that require network access or real model weights (deselect with -m 'not integration')",
+    "slow: marks tests that take more than 10 seconds",
+]
+addopts = "-v --tb=short"

@@ -1,0 +1,24 @@
+# Evaluation suite configuration.
+
+reconstruction:
+  batch_size: 1024
+  # Fraction of variance explained < 0 means worse than predicting the mean.
+  # A well-trained SAE should achieve fve > 0.9.
+  min_acceptable_fve: 0.8
+
+probing:
+  # GO term linear probing (methodology: Adams et al. 2024, InterPLM 2024)
+  min_positives: 50         # skip GO terms with fewer positive examples
+  max_go_terms: 500         # cap for runtime; sample most-common terms if exceeded
+  train_fraction: 0.8
+  n_jobs: -1                # -1 = all available CPUs for logistic regression
+  # AUROC thresholds for reporting
+  auroc_thresholds: [0.65, 0.70, 0.75, 0.80, 0.85]
+  # Reference threshold: any GO term with single_feature_auroc above this
+  reference_auroc: 0.70
+  # Held-out and hard-negative AUROC alongside the naive max AUROC, to show how
+  # much of the best-feature AUROC is selection inflation. Off by default;
+  # enabled with --held-out-baselines in scripts/run_eval.py.
+  compute_held_out_baselines: false
+  held_out_fraction: 0.5    # fraction of the test split reserved for held-out estimation
+  min_hard_negatives: 10    # skip hard-negative AUROC below this many sibling negatives
